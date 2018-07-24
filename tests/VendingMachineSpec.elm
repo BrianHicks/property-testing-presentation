@@ -4,25 +4,16 @@ import Dict
 import Expect
 import Fuzz exposing (Fuzzer)
 import Money exposing (Money)
+import MoneySpec exposing (aReasonableAmountOfMoney, money)
 import Test exposing (..)
 import VendingMachine exposing (VendingMachine)
-
-
-money : Fuzzer Money
-money =
-    Fuzz.oneOf
-        [ Fuzz.constant Money.Nickel
-        , Fuzz.constant Money.Dime
-        , Fuzz.constant Money.Quarter
-        , Fuzz.constant Money.Dollar
-        ]
 
 
 item : Fuzzer VendingMachine.Item
 item =
     Fuzz.map2 VendingMachine.Item
-        Fuzz.int
-        Fuzz.float
+        (Fuzz.intRange 0 10)
+        aReasonableAmountOfMoney
 
 
 stock : Fuzzer VendingMachine.Stock

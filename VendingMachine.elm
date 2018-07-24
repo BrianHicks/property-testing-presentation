@@ -15,7 +15,7 @@ import Money exposing (Money)
 
 type alias Item =
     { inventory : Int
-    , price : Float
+    , price : Int
     }
 
 
