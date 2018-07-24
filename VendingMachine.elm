@@ -1,7 +1,7 @@
 module VendingMachine
     exposing
-        ( Inventory
-        , Prices
+        ( Item
+        , Stock
         , VendingMachine
         , get
         , init
@@ -9,41 +9,41 @@ module VendingMachine
         , refund
         )
 
-import Currency exposing (Currency)
 import Dict exposing (Dict)
+import Money exposing (Money)
 
 
-type alias Prices =
-    Dict String Float
+type alias Item =
+    { inventory : Int
+    , price : Float
+    }
 
 
-type alias Inventory =
-    Dict String Int
+type alias Stock =
+    Dict String Item
 
 
 type alias VendingMachine =
-    { change : List Currency
-    , currentlyPaid : List Currency
-    , prices : Dict String Float
-    , inventory : Dict String Int
+    { change : List Money
+    , currentlyPaid : List Money
+    , stock : Dict String Item
     }
 
 
-init : List Currency -> Prices -> Inventory -> VendingMachine
-init change prices inventory =
+init : List Money -> Stock -> VendingMachine
+init change stock =
     { change = change
     , currentlyPaid = []
-    , prices = prices
-    , inventory = inventory
+    , stock = stock
     }
 
 
-pay : Currency -> VendingMachine -> VendingMachine
-pay currency machine =
+pay : Money -> VendingMachine -> VendingMachine
+pay money machine =
     machine
 
 
-refund : VendingMachine -> ( List Currency, VendingMachine )
+refund : VendingMachine -> ( List Money, VendingMachine )
 refund machine =
     ( [], machine )
 

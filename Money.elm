@@ -1,14 +1,14 @@
-module Currency exposing (Currency(..), toFloat)
+module Money exposing (Money(..), toFloat)
 
 
-type Currency
+type Money
     = Nickel
     | Dime
     | Quarter
     | Dollar
 
 
-toFloat : Currency -> Float
+toFloat : Money -> Float
 toFloat item =
     case item of
         Nickel ->
