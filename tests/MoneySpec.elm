@@ -17,6 +17,11 @@ money =
         ]
 
 
+aReasonableAmountOfMoney : Fuzzer Int
+aReasonableAmountOfMoney =
+    Fuzz.intRange 0 500
+
+
 moneyTest : Test
 moneyTest =
     describe "Money"
@@ -26,7 +31,7 @@ moneyTest =
                     |> Money.toCents
                     |> Money.changeFor
                     |> Expect.equal [ money ]
-        , fuzz (Fuzz.intRange 0 500) "changeFor then changeFor results in the same amount" <|
+        , fuzz aReasonableAmountOfMoney "changeFor then changeFor results in the same amount" <|
             \amount ->
                 amount
                     |> Money.changeFor
