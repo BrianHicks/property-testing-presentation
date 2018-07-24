@@ -50,6 +50,6 @@ refund machine =
     )
 
 
-get : String -> VendingMachine -> ( String, VendingMachine )
+get : String -> VendingMachine -> Maybe ( String, VendingMachine )
 get name machine =
-    ( name, machine )
+    Just ( name, machine )
