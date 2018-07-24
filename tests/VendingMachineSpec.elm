@@ -45,7 +45,7 @@ vendingMachineTest =
         [ fuzz2 machine (Fuzz.list money) "paying and refunding should give you the same money" <|
             \machine money ->
                 money
-                    |> List.foldl VendingMachine.pay machine
+                    |> List.foldr VendingMachine.pay machine
                     |> VendingMachine.refund
                     |> Tuple.first
                     |> Expect.equal money

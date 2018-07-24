@@ -40,12 +40,14 @@ init change stock =
 
 pay : Money -> VendingMachine -> VendingMachine
 pay money machine =
-    machine
+    { machine | currentlyPaid = money :: machine.currentlyPaid }
 
 
 refund : VendingMachine -> ( List Money, VendingMachine )
 refund machine =
-    ( [], machine )
+    ( machine.currentlyPaid
+    , { machine | currentlyPaid = [] }
+    )
 
 
 get : String -> VendingMachine -> ( String, VendingMachine )
