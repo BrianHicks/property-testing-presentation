@@ -1,24 +1,49 @@
-module Money exposing (Money(..), toFloat)
+module Money exposing (Money(..), changeFor, toCents)
 
 
 type Money
-    = Nickel
-    | Dime
+    = Dollar
     | Quarter
-    | Dollar
+    | Dime
+    | Nickel
+    | Penny
 
 
-toFloat : Money -> Float
-toFloat item =
+toCents : Money -> Int
+toCents item =
     case item of
-        Nickel ->
-            0.5
-
-        Dime ->
-            0.1
+        Dollar ->
+            100
 
         Quarter ->
-            0.25
+            25
 
-        Dollar ->
+        Dime ->
+            10
+
+        Nickel ->
+            5
+
+        Penny ->
             1
+
+
+changeFor : Int -> List Money
+changeFor amount =
+    changeForHelper [] amount
+
+
+changeForHelper : List Money -> Int -> List Money
+changeForHelper soFar amount =
+    if amount >= 100 then
+        changeForHelper (Dollar :: soFar) (amount - 100)
+    else if amount >= 25 then
+        changeForHelper (Quarter :: soFar) (amount - 25)
+    else if amount >= 10 then
+        changeForHelper (Dime :: soFar) (amount - 10)
+    else if amount >= 5 then
+        changeForHelper (Nickel :: soFar) (amount - 5)
+    else if amount >= 1 then
+        changeForHelper (Penny :: soFar) (amount - 1)
+    else
+        soFar
