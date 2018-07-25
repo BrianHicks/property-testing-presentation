@@ -13,27 +13,21 @@ item : Fuzzer VendingMachine.Item
 item =
     Fuzz.map2 VendingMachine.Item
         (Fuzz.intRange 0 10)
-        (Fuzz.conditional
-            { condition = \howMuch -> howMuch > 0
-            , fallback = (+) 1
-            , retries = 1
-            }
-            aReasonableAmountOfMoney
-        )
+        aReasonableAmountOfMoney
 
 
 stock : Fuzzer VendingMachine.Stock
 stock =
     Fuzz.tuple ( Fuzz.string, item )
-        |> Fuzz.list
-        |> Fuzz.conditional
-            { condition = \items -> not (List.isEmpty items)
-            , fallback =
-                \items ->
-                    [ ( "Dr. Pepper", { inventory = 1, price = 100 } ) ]
-            , retries = 10
-            }
+        |> nonEmptyList
         |> Fuzz.map Dict.fromList
+
+
+nonEmptyList : Fuzzer a -> Fuzzer (List a)
+nonEmptyList item =
+    Fuzz.map2 (::)
+        item
+        (Fuzz.list item)
 
 
 machine : Fuzzer VendingMachine
@@ -53,13 +47,13 @@ vendingMachineTest =
                     |> VendingMachine.refund
                     |> Tuple.first
                     |> Expect.equal money
-        , fuzz machine "you can't get drinks for free" <|
+        , fuzz machine "you can't usually get stuff without paying" <|
             \machine ->
                 let
                     selection =
                         machine
                             |> VendingMachine.prices
-                            |> Dict.keys
+                            |> Dict.toList
                             |> List.head
                 in
                 case selection of
@@ -67,8 +61,17 @@ vendingMachineTest =
                     Nothing ->
                         Expect.pass
 
-                    Just name ->
+                    -- if the item was free, we can get it
+                    Just ( name, 0 ) ->
                         machine
                             |> VendingMachine.get name
+                            |> Tuple.first
+                            |> Expect.equal (Just name)
+
+                    -- and we shouldn't be able to get it if it isn't free
+                    Just ( name, _ ) ->
+                        machine
+                            |> VendingMachine.get name
+                            |> Tuple.first
                             |> Expect.equal Nothing
         ]

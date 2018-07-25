@@ -64,7 +64,7 @@ refund machine =
     )
 
 
-get : String -> VendingMachine -> Maybe ( String, VendingMachine )
+get : String -> VendingMachine -> ( Maybe String, VendingMachine )
 get selection machine =
     let
         paid =
@@ -75,9 +75,9 @@ get selection machine =
     case Dict.get selection machine.stock of
         Just { price } ->
             if paid >= price then
-                Just ( selection, machine )
+                ( Just selection, machine )
             else
-                Nothing
+                ( Nothing, machine )
 
         Nothing ->
-            Nothing
+            ( Nothing, machine )
