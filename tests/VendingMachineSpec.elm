@@ -42,7 +42,20 @@ vendingMachineTest =
                     |> Expect.equal money
         , fuzz machine "the machine doesn't let you get drinks for free" <|
             \machine ->
-                machine
-                    |> VendingMachine.get "Dr. Pepper"
-                    |> Expect.equal Nothing
+                let
+                    selection =
+                        machine
+                            |> VendingMachine.prices
+                            |> Dict.keys
+                            |> List.head
+                in
+                case selection of
+                    -- don't bother trying, the machine is empty
+                    Nothing ->
+                        Expect.pass
+
+                    Just name ->
+                        machine
+                            |> VendingMachine.get name
+                            |> Expect.equal Nothing
         ]

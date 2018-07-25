@@ -6,6 +6,7 @@ module VendingMachine
         , get
         , init
         , pay
+        , prices
         , refund
         )
 
@@ -30,6 +31,11 @@ type alias VendingMachine =
     }
 
 
+prices : VendingMachine -> Dict String Int
+prices machine =
+    Dict.map (\_ item -> item.price) machine.stock
+
+
 init : List Money -> Stock -> VendingMachine
 init change stock =
     { change = change
@@ -51,5 +57,10 @@ refund machine =
 
 
 get : String -> VendingMachine -> Maybe ( String, VendingMachine )
-get name machine =
-    Just ( name, machine )
+get selection machine =
+    case Dict.get selection machine.stock of
+        Just _ ->
+            Just ( selection, machine )
+
+        Nothing ->
+            Nothing
