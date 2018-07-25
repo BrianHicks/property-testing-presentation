@@ -40,7 +40,7 @@ vendingMachineTest =
                     |> VendingMachine.refund
                     |> Tuple.first
                     |> Expect.equal money
-        , fuzz machine "the machine doesn't let you get drinks for free" <|
+        , fuzz machine "you can't get drinks for free" <|
             \machine ->
                 let
                     selection =

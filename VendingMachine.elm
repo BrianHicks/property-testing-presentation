@@ -31,9 +31,17 @@ type alias VendingMachine =
     }
 
 
+
+-- information about the machine
+
+
 prices : VendingMachine -> Dict String Int
 prices machine =
     Dict.map (\_ item -> item.price) machine.stock
+
+
+
+-- using the machine
 
 
 init : List Money -> Stock -> VendingMachine
