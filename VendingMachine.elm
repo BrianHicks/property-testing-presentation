@@ -66,9 +66,18 @@ refund machine =
 
 get : String -> VendingMachine -> Maybe ( String, VendingMachine )
 get selection machine =
+    let
+        paid =
+            machine.paid
+                |> List.map Money.toCents
+                |> List.sum
+    in
     case Dict.get selection machine.stock of
-        Just _ ->
-            Just ( selection, machine )
+        Just { price } ->
+            if paid >= price then
+                Just ( selection, machine )
+            else
+                Nothing
 
         Nothing ->
             Nothing
