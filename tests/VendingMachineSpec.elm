@@ -18,16 +18,7 @@ item =
 
 stock : Fuzzer VendingMachine.Stock
 stock =
-    Fuzz.tuple ( Fuzz.string, item )
-        |> nonEmptyList
-        |> Fuzz.map Dict.fromList
-
-
-nonEmptyList : Fuzzer a -> Fuzzer (List a)
-nonEmptyList item =
-    Fuzz.map2 (::)
-        item
-        (Fuzz.list item)
+    Fuzz.map2 Dict.singleton Fuzz.string item
 
 
 machine : Fuzzer VendingMachine
