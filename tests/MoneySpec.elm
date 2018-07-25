@@ -31,7 +31,7 @@ moneyTest =
                     |> Money.toCents
                     |> Money.changeFor
                     |> Expect.equal [ money ]
-        , fuzz aReasonableAmountOfMoney "changeFor then changeFor results in the same amount" <|
+        , fuzz aReasonableAmountOfMoney "changeFor then toCents results in the same amount" <|
             \amount ->
                 amount
                     |> Money.changeFor
