@@ -37,12 +37,19 @@ machine =
         stock
 
 
-arbitrarySelection : VendingMachine -> Maybe ( String, Int )
+arbitrarySelection : VendingMachine -> Maybe ( String, Int, Bool )
 arbitrarySelection machine =
     machine
         |> VendingMachine.prices
         |> Dict.toList
         |> List.head
+        |> Maybe.map
+            (\( name, price ) ->
+                ( name
+                , price
+                , VendingMachine.hasItem name machine
+                )
+            )
 
 
 vendingMachineTest : Test
@@ -62,17 +69,38 @@ vendingMachineTest =
                     Nothing ->
                         Expect.pass
 
+                    -- don't bother trying, this item is out
+                    Just ( _, _, False ) ->
+                        Expect.pass
+
                     -- if the item was free, we can get it
-                    Just ( name, 0 ) ->
+                    Just ( name, 0, _ ) ->
                         machine
                             |> VendingMachine.get name
                             |> Tuple.first
                             |> Expect.equal (Just name)
 
                     -- and we shouldn't be able to get it if it isn't free
-                    Just ( name, _ ) ->
+                    Just ( name, _, _ ) ->
                         machine
                             |> VendingMachine.get name
                             |> Tuple.first
                             |> Expect.equal Nothing
+        , fuzz machine "paying the exact amount lets you get something" <|
+            \machine ->
+                case arbitrarySelection machine of
+                    -- don't bother trying, the machine is empty
+                    Nothing ->
+                        Expect.pass
+
+                    -- don't bother trying, this item is out
+                    Just ( _, _, False ) ->
+                        Expect.pass
+
+                    Just ( name, price, _ ) ->
+                        Money.changeFor price
+                            |> List.foldl VendingMachine.pay machine
+                            |> VendingMachine.get name
+                            |> Tuple.first
+                            |> Expect.equal (Just name)
         ]

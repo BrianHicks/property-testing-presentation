@@ -4,6 +4,7 @@ module VendingMachine
         , Stock
         , VendingMachine
         , get
+        , hasItem
         , init
         , pay
         , prices
@@ -40,6 +41,15 @@ prices machine =
     Dict.map (\_ item -> item.price) machine.stock
 
 
+hasItem : String -> VendingMachine -> Bool
+hasItem name { stock } =
+    stock
+        |> Dict.get name
+        |> Maybe.map .inventory
+        |> Maybe.map ((<) 0)
+        |> Maybe.withDefault False
+
+
 
 -- using the machine
 
@@ -73,8 +83,8 @@ get selection machine =
                 |> List.sum
     in
     case Dict.get selection machine.stock of
-        Just { price } ->
-            if paid >= price then
+        Just { inventory, price } ->
+            if paid >= price && inventory > 0 then
                 ( Just selection, machine )
             else
                 ( Nothing, machine )
