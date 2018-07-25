@@ -13,7 +13,13 @@ item : Fuzzer VendingMachine.Item
 item =
     Fuzz.map2 VendingMachine.Item
         (Fuzz.intRange 0 10)
-        aReasonableAmountOfMoney
+        (Fuzz.conditional
+            { condition = \howMuch -> howMuch > 0
+            , fallback = (+) 1
+            , retries = 1
+            }
+            aReasonableAmountOfMoney
+        )
 
 
 stock : Fuzzer VendingMachine.Stock
