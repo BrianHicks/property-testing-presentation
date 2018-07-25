@@ -37,6 +37,14 @@ machine =
         stock
 
 
+arbitrarySelection : VendingMachine -> Maybe ( String, Int )
+arbitrarySelection machine =
+    machine
+        |> VendingMachine.prices
+        |> Dict.toList
+        |> List.head
+
+
 vendingMachineTest : Test
 vendingMachineTest =
     describe "VendingMachine"
@@ -49,14 +57,7 @@ vendingMachineTest =
                     |> Expect.equal money
         , fuzz machine "you can't usually get stuff without paying" <|
             \machine ->
-                let
-                    selection =
-                        machine
-                            |> VendingMachine.prices
-                            |> Dict.toList
-                            |> List.head
-                in
-                case selection of
+                case arbitrarySelection machine of
                     -- don't bother trying, the machine is empty
                     Nothing ->
                         Expect.pass
