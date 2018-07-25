@@ -6,6 +6,7 @@ module VendingMachine
         , get
         , hasItem
         , init
+        , maintenanceCheckStock
         , pay
         , prices
         , refund
@@ -83,11 +84,28 @@ get selection machine =
                 |> List.sum
     in
     case Dict.get selection machine.stock of
-        Just { inventory, price } ->
-            if paid >= price && inventory > 0 then
-                ( Just selection, machine )
+        Just item ->
+            if paid >= item.price && item.inventory > 0 then
+                ( Just selection
+                , { machine
+                    | stock =
+                        Dict.insert
+                            selection
+                            { item | inventory = item.inventory - 1 }
+                            machine.stock
+                  }
+                )
             else
                 ( Nothing, machine )
 
         Nothing ->
             ( Nothing, machine )
+
+
+
+-- maintaining the machine
+
+
+maintenanceCheckStock : VendingMachine -> Stock
+maintenanceCheckStock { stock } =
+    stock

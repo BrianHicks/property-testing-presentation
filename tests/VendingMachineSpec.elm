@@ -43,6 +43,14 @@ arbitrarySelection machine =
             )
 
 
+amountInStock : String -> VendingMachine -> Int
+amountInStock name machine =
+    VendingMachine.maintenanceCheckStock machine
+        |> Dict.get name
+        |> Maybe.map .inventory
+        |> Maybe.withDefault 0
+
+
 vendingMachineTest : Test
 vendingMachineTest =
     describe "VendingMachine"
@@ -56,13 +64,19 @@ vendingMachineTest =
         , fuzz machine "you can't usually get stuff without paying" <|
             \machine ->
                 case arbitrarySelection machine of
-                    -- don't bother trying, the machine is empty
+                    -- an empty machine shouldn't give any items
                     Nothing ->
-                        Expect.pass
+                        machine
+                            |> VendingMachine.get "shouldn't matter"
+                            |> Tuple.first
+                            |> Expect.equal Nothing
 
-                    -- don't bother trying, this item is out
-                    Just ( _, _, False ) ->
-                        Expect.pass
+                    -- an out-of-stock item shouldn't be vended
+                    Just ( name, _, False ) ->
+                        machine
+                            |> VendingMachine.get name
+                            |> Tuple.first
+                            |> Expect.equal Nothing
 
                     -- if the item was free, we can get it
                     Just ( name, 0, _ ) ->
@@ -80,18 +94,48 @@ vendingMachineTest =
         , fuzz machine "paying the exact amount lets you get something" <|
             \machine ->
                 case arbitrarySelection machine of
-                    -- don't bother trying, the machine is empty
+                    -- an empty machine shouldn't give any items
                     Nothing ->
-                        Expect.pass
+                        machine
+                            |> VendingMachine.get "shouldn't matter"
+                            |> Tuple.first
+                            |> Expect.equal Nothing
 
-                    -- don't bother trying, this item is out
-                    Just ( _, _, False ) ->
-                        Expect.pass
-
-                    Just ( name, price, _ ) ->
+                    Just ( name, price, inStock ) ->
                         Money.changeFor price
                             |> List.foldl VendingMachine.pay machine
                             |> VendingMachine.get name
                             |> Tuple.first
-                            |> Expect.equal (Just name)
+                            |> Expect.equal
+                                (if inStock then
+                                    Just name
+                                 else
+                                    Nothing
+                                )
+        , fuzz machine "the vending machine is not infinite" <|
+            \machine ->
+                case arbitrarySelection machine of
+                    Nothing ->
+                        machine
+                            |> VendingMachine.get "shouldn't matter"
+                            |> Tuple.second
+                            |> Expect.equal machine
+
+                    -- the stock shouldn't change if it was out
+                    Just ( name, price, False ) ->
+                        Money.changeFor price
+                            |> List.foldl VendingMachine.pay machine
+                            |> VendingMachine.get name
+                            |> Tuple.second
+                            |> amountInStock name
+                            |> Expect.equal (amountInStock name machine)
+
+                    -- the stock should change if it wasn't out
+                    Just ( name, price, True ) ->
+                        Money.changeFor price
+                            |> List.foldl VendingMachine.pay machine
+                            |> VendingMachine.get name
+                            |> Tuple.second
+                            |> amountInStock name
+                            |> Expect.equal (amountInStock name machine - 1)
         ]
