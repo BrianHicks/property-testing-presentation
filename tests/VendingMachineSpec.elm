@@ -20,6 +20,13 @@ stock : Fuzzer VendingMachine.Stock
 stock =
     Fuzz.tuple ( Fuzz.string, item )
         |> Fuzz.list
+        |> Fuzz.conditional
+            { condition = \items -> not (List.isEmpty items)
+            , fallback =
+                \items ->
+                    [ ( "Dr. Pepper", { inventory = 1, price = 100 } ) ]
+            , retries = 10
+            }
         |> Fuzz.map Dict.fromList
 
 
