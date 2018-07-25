@@ -26,7 +26,7 @@ type alias Stock =
 
 type alias VendingMachine =
     { change : List Money
-    , currentlyPaid : List Money
+    , paid : List Money
     , stock : Dict String Item
     }
 
@@ -47,20 +47,20 @@ prices machine =
 init : List Money -> Stock -> VendingMachine
 init change stock =
     { change = change
-    , currentlyPaid = []
+    , paid = []
     , stock = stock
     }
 
 
 pay : Money -> VendingMachine -> VendingMachine
 pay money machine =
-    { machine | currentlyPaid = money :: machine.currentlyPaid }
+    { machine | paid = money :: machine.paid }
 
 
 refund : VendingMachine -> ( List Money, VendingMachine )
 refund machine =
-    ( machine.currentlyPaid
-    , { machine | currentlyPaid = [] }
+    ( machine.paid
+    , { machine | paid = [] }
     )
 
 
