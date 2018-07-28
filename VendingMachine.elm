@@ -85,7 +85,7 @@ get selection machine =
     in
     case Dict.get selection machine.stock of
         Just item ->
-            if paid >= item.price && item.inventory > 0 then
+            if paid == item.price && item.inventory > 0 then
                 ( Just selection
                 , { machine
                     | stock =
