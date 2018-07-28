@@ -1,5 +1,7 @@
 module VendingMachineSpec exposing (..)
 
+import ArchitectureTest
+import ArchitectureTest.Types exposing (TestedApp, TestedModel(..), TestedUpdate(..))
 import Dict
 import Expect
 import Fuzz exposing (Fuzzer)
@@ -16,9 +18,20 @@ item =
         aReasonableAmountOfMoney
 
 
+itemName : Fuzzer String
+itemName =
+    Fuzz.oneOf
+        [ Fuzz.constant "Dr. Pepper"
+        , Fuzz.constant "Stroopwafel"
+        , Fuzz.constant "Potato Chips"
+        ]
+
+
 stock : Fuzzer VendingMachine.Stock
 stock =
-    Fuzz.map2 Dict.singleton Fuzz.string item
+    Fuzz.tuple ( itemName, item )
+        |> Fuzz.list
+        |> Fuzz.map Dict.fromList
 
 
 machine : Fuzzer VendingMachine
@@ -138,4 +151,100 @@ vendingMachineTest =
                             |> Tuple.second
                             |> amountInStock name
                             |> Expect.equal (amountInStock name machine - 1)
+        ]
+
+
+
+-- MODEL TESTING!
+
+
+type alias Model =
+    { machine : VendingMachine
+    , ourMoney : Int
+    , totalMoney : Int
+    }
+
+
+type
+    Action
+    -- consumer
+    = Pay Money
+    | Refund
+    | Get String
+      -- maintenance
+    | SetStock VendingMachine.Stock
+    | EmptyCoins
+
+
+action : Fuzzer Action
+action =
+    Fuzz.oneOf
+        [ Fuzz.map Pay money
+        , Fuzz.constant Refund
+        , Fuzz.map Get Fuzz.string
+        , Fuzz.map SetStock stock
+        , Fuzz.constant EmptyCoins
+        ]
+
+
+updater : Action -> Model -> Model
+updater action ({ machine } as model) =
+    case action of
+        Pay howMuch ->
+            { model
+                | machine = VendingMachine.pay howMuch machine
+                , totalMoney = Money.toCents howMuch + model.totalMoney
+            }
+
+        Refund ->
+            let
+                ( refunded, newMachine ) =
+                    VendingMachine.refund machine
+            in
+            { model
+                | machine = newMachine
+                , ourMoney = Money.total refunded + model.ourMoney
+            }
+
+        Get item ->
+            case VendingMachine.get item machine of
+                ( Just item, newMachine ) ->
+                    { model | machine = newMachine }
+
+                ( Nothing, newMachine ) ->
+                    { model | machine = newMachine }
+
+        SetStock stock ->
+            { model | machine = { machine | stock = stock } }
+
+        EmptyCoins ->
+            { model
+                | machine = { machine | money = [] }
+                , totalMoney = model.totalMoney
+            }
+
+
+modelForTesting : TestedApp Model Action
+modelForTesting =
+    { model =
+        stock
+            |> Fuzz.map (VendingMachine.init [])
+            |> Fuzz.map (\machine -> Model machine 0 0)
+            |> FuzzedModel
+    , update = BeginnerUpdate updater
+    , msgFuzzer = action
+    }
+
+
+modelTest : Test
+modelTest =
+    describe "model testing for vending machines"
+        [ ArchitectureTest.invariantTest "money is never destroyed" modelForTesting <|
+            \_ _ { machine, ourMoney, totalMoney } ->
+                Expect.equal
+                    (Money.total machine.money
+                        + Money.total machine.pending
+                        + ourMoney
+                    )
+                    totalMoney
         ]
