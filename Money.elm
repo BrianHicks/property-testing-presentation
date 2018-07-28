@@ -1,4 +1,4 @@
-module Money exposing (Money(..), changeFor, toCents)
+module Money exposing (Money(..), changeFor, toCents, total)
 
 
 type Money
@@ -26,6 +26,11 @@ toCents item =
 
         Penny ->
             1
+
+
+total : List Money -> Int
+total =
+    List.map toCents >> List.sum
 
 
 changeFor : Int -> List Money
