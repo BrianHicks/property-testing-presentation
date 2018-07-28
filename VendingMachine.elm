@@ -27,8 +27,8 @@ type alias Stock =
 
 
 type alias VendingMachine =
-    { change : List Money
-    , paid : List Money
+    { money : List Money
+    , pending : List Money
     , stock : Dict String Item
     }
 
@@ -56,36 +56,36 @@ hasItem name { stock } =
 
 
 init : List Money -> Stock -> VendingMachine
-init change stock =
-    { change = change
-    , paid = []
+init money stock =
+    { money = money
+    , pending = []
     , stock = stock
     }
 
 
 pay : Money -> VendingMachine -> VendingMachine
 pay money machine =
-    { machine | paid = money :: machine.paid }
+    { machine | pending = money :: machine.pending }
 
 
 refund : VendingMachine -> ( List Money, VendingMachine )
 refund machine =
-    ( machine.paid
-    , { machine | paid = [] }
+    ( machine.pending
+    , { machine | pending = [] }
     )
 
 
 get : String -> VendingMachine -> ( Maybe String, VendingMachine )
 get selection machine =
     let
-        paid =
-            machine.paid
+        pending =
+            machine.pending
                 |> List.map Money.toCents
                 |> List.sum
     in
     case Dict.get selection machine.stock of
         Just item ->
-            if paid == item.price && item.inventory > 0 then
+            if pending == item.price && item.inventory > 0 then
                 ( Just selection
                 , { machine
                     | stock =
