@@ -17,27 +17,16 @@ SWBAT:
       - example: sorting algorithm
         assumed knoweldge: what "sorting" means
         - rephrase the intent of the code
-      - example: vending machine spec
-        - introduce the vending machine example
+      - example: modeling change
+        - introduce the money example
           - what properties does this spec have?
-  - write well-formed generators/shrinkers
-- apply model testing to their own code
+  - write custom generators
 
-Vending machine spec:
+Money spec:
 
-It works how you'd expect a vending machine to work. Specifically:
-
-1. Put money into the vending machine
-2. Push the button for the drink you want
-3. Get the drink
-
-Level 2:
-
-- only accept payment if you can provide the requested drink
-- only accept non-exact payments if you can make change
-- if there's no money in the machine:
-  - pushing a drink button doesn't dispense a drink
-  - pushing the refund button doesn't dispense change
+We want to program the money handling for a vending machine. That means, we need
+to be able to keep track of units of monetary value and make change for them. We
+also need to be able to perform basic mathematical operations on them.
 
 -->
 
@@ -75,14 +64,14 @@ Level 2:
 [.background-color: #7ED321]
 [.header: #FFF]
 
-## 3. How can I use them?
+## 3. :skull: Demo :skull:
 
 ---
 
 [.background-color: #7ED321]
 [.header: #FFF]
 
-## 4. :skull: Demo :skull:
+## 4. Takeaways & Recommendations
 
 ---
 
@@ -110,7 +99,7 @@ Level 2:
 [.background-color: #7ED321]
 [.header: #FFF]
 
-## 1b. What's a property?
+## 1. What's a property ~~test~~?
 
 ---
 
@@ -136,7 +125,11 @@ multiplication =
 
 ---
 
-# [fit] `1024*512 = 512*1024`
+# `5*3 = 3*5`
+
+---
+
+# `x*y = y*x`
 
 ---
 
@@ -161,8 +154,8 @@ multiplication : Test
 multiplication =
     describe "multiplication"
         [ fuzz2 Fuzz.int Fuzz.int "is commutative" <|
-            \n m ->
-                Expect.equal (n * m) (m * n)
+            \x y ->
+                Expect.equal (x * y) (y * x)
         ]
 ```
 
@@ -218,23 +211,82 @@ fuzz (Fuzz.list Fuzz.int) "no five items" <|
 
 ---
 
+```elm
+snack : Fuzzer String
+snack =
+    Fuzz.oneOf
+        [ Fuzz.constant "Dr. Pepper"
+        , Fuzz.constant "All Dressed Chips"
+        , Fuzz.constant "Baklava"
+        ]
+```
+
+---
+
+```elm
+snack : Fuzzer String
+snack =
+    Fuzz.frequency
+        [ ( 2, Fuzz.constant "Dr. Pepper" )
+        , ( 5, Fuzz.constant "All Dressed Chips" )
+        , ( 3, Fuzz.constant "Baklava" )
+        ]
+```
+
+---
+
+[.background-color: #7ED321]
+[.header: #FFF]
+
+## 2. When are they useful?
+
+---
+
+## When a property (invariant) is known.
+
+---
+
+## When two functions do opposite things.
+
+---
+
+## When the system under test does a complex thing, but the user sees a simple thing.
+
+---
+
+## But... it's really hard to describe properties. Sorry.
+
+---
+
+> The numbers in this list will be ordered from least to greatest.
+
+---
+
+> Each number in this list will be less than or equal to the one after it.
+
+---
+
+[.background-color: #7ED321]
+[.header: #FFF]
+
+## 3. :skull: Demo :skull:
+
+---
+
 # [fit] What property
 # testing *isn't*
 
 ---
 
-### Property Testing isn't...
-## Formal Methods
+# Formal Methods
 
 ---
 
-### Property Testing isn't...
-## Fuzzing
+# Fuzzing
 
 ---
 
-### Property Testing isn't...
-## Integration Testing
+# Integration Testing
 
 ---
 
