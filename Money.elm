@@ -11,4 +11,15 @@ type Money
 
 toFloat : Money -> Float
 toFloat money =
-    0
+    if money == Dollar then
+        1
+    else if money == Quarter then
+        0.25
+    else if money == Dime then
+        0.1
+    else if money == Nickel then
+        0.05
+    else if money == Penny then
+        0.01
+    else
+        0
