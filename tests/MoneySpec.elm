@@ -26,5 +26,18 @@ moneySpec =
                     money
                         |> Money.toFloat
                         |> Expect.notEqual 0
+            , describe "specific values" <|
+                List.map
+                    (\( unit, value ) ->
+                        test ("a " ++ toString unit ++ " is worth " ++ toString value) <|
+                            \_ ->
+                                Expect.equal (Money.toFloat unit) value
+                    )
+                    [ ( Dollar, 1 )
+                    , ( Quarter, 0.25 )
+                    , ( Dime, 0.1 )
+                    , ( Nickel, 0.05 )
+                    , ( Penny, 0.01 )
+                    ]
             ]
         ]
