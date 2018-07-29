@@ -1,4 +1,4 @@
-module Money exposing (..)
+module Money exposing (Money(..), toFloat)
 
 
 type Money
@@ -7,3 +7,8 @@ type Money
     | Dime
     | Nickel
     | Penny
+
+
+toFloat : Money -> Float
+toFloat money =
+    0
