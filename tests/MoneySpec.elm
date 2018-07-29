@@ -41,7 +41,7 @@ moneySpec =
                     ]
             ]
         , describe "toMoney"
-            [ fuzz Fuzz.float "has at least one money in it" <|
+            [ fuzz (Fuzz.floatRange 0 1000) "has at least one money in it" <|
                 \amount ->
                     Money.toMoney amount
                         |> Expect.notEqual []

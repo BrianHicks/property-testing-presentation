@@ -30,15 +30,20 @@ toFloat money =
 
 toMoney : Float -> List Money
 toMoney amount =
+    toMoneyHelp amount []
+
+
+toMoneyHelp : Float -> List Money -> List Money
+toMoneyHelp amount soFar =
     if amount >= toFloat Dollar then
-        Dollar :: toMoney (amount - toFloat Dollar)
+        toMoneyHelp (amount - toFloat Dollar) (Dollar :: soFar)
     else if amount >= toFloat Quarter then
-        Quarter :: toMoney (amount - toFloat Quarter)
+        toMoneyHelp (amount - toFloat Quarter) (Quarter :: soFar)
     else if amount >= toFloat Dime then
-        Dime :: toMoney (amount - toFloat Dime)
+        toMoneyHelp (amount - toFloat Dime) (Dime :: soFar)
     else if amount >= toFloat Nickel then
-        Nickel :: toMoney (amount - toFloat Nickel)
+        toMoneyHelp (amount - toFloat Nickel) (Nickel :: soFar)
     else if amount >= toFloat Penny then
-        Penny :: toMoney (amount - toFloat Penny)
+        toMoneyHelp (amount - toFloat Penny) (Penny :: soFar)
     else
         []
