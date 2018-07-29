@@ -20,35 +20,35 @@ money =
 moneySpec : Test
 moneySpec =
     describe "Money"
-        [ describe "toFloat"
+        [ describe "toCents"
             [ fuzz money "is never zero" <|
                 \money ->
                     money
-                        |> Money.toFloat
+                        |> Money.toCents
                         |> Expect.notEqual 0
             , describe "specific values" <|
                 List.map
                     (\( unit, value ) ->
                         test ("a " ++ toString unit ++ " is worth " ++ toString value) <|
                             \_ ->
-                                Expect.equal (Money.toFloat unit) value
+                                Expect.equal (Money.toCents unit) value
                     )
-                    [ ( Dollar, 1 )
-                    , ( Quarter, 0.25 )
-                    , ( Dime, 0.1 )
-                    , ( Nickel, 0.05 )
-                    , ( Penny, 0.01 )
+                    [ ( Dollar, 100 )
+                    , ( Quarter, 25 )
+                    , ( Dime, 10 )
+                    , ( Nickel, 5 )
+                    , ( Penny, 1 )
                     ]
             ]
         , describe "toMoney"
-            [ fuzz (Fuzz.floatRange 1 1000) "has at least one money in it" <|
+            [ fuzz (Fuzz.intRange 1 1000) "has at least one money in it" <|
                 \amount ->
                     Money.toMoney amount
                         |> Expect.notEqual []
-            , fuzz (Fuzz.floatRange 1 1000) "has the right amount of money in it" <|
+            , fuzz (Fuzz.intRange 1 1000) "has the right amount of money in it" <|
                 \amount ->
                     Money.toMoney amount
-                        |> List.map Money.toFloat
+                        |> List.map Money.toCents
                         |> List.sum
                         |> Expect.equal amount
             ]

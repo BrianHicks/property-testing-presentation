@@ -1,4 +1,4 @@
-module Money exposing (Money(..), toFloat, toMoney)
+module Money exposing (Money(..), toCents, toMoney)
 
 
 type Money
@@ -9,41 +9,41 @@ type Money
     | Penny
 
 
-toFloat : Money -> Float
-toFloat money =
+toCents : Money -> Int
+toCents money =
     case money of
         Dollar ->
-            1
+            100
 
         Quarter ->
-            0.25
+            25
 
         Dime ->
-            0.1
+            10
 
         Nickel ->
-            0.05
+            5
 
         Penny ->
-            0.01
+            1
 
 
-toMoney : Float -> List Money
+toMoney : Int -> List Money
 toMoney amount =
     toMoneyHelp amount []
 
 
-toMoneyHelp : Float -> List Money -> List Money
+toMoneyHelp : Int -> List Money -> List Money
 toMoneyHelp amount soFar =
-    if amount >= toFloat Dollar then
-        toMoneyHelp (amount - toFloat Dollar) (Dollar :: soFar)
-    else if amount >= toFloat Quarter then
-        toMoneyHelp (amount - toFloat Quarter) (Quarter :: soFar)
-    else if amount >= toFloat Dime then
-        toMoneyHelp (amount - toFloat Dime) (Dime :: soFar)
-    else if amount >= toFloat Nickel then
-        toMoneyHelp (amount - toFloat Nickel) (Nickel :: soFar)
-    else if amount >= toFloat Penny then
-        toMoneyHelp (amount - toFloat Penny) (Penny :: soFar)
+    if amount >= toCents Dollar then
+        toMoneyHelp (amount - toCents Dollar) (Dollar :: soFar)
+    else if amount >= toCents Quarter then
+        toMoneyHelp (amount - toCents Quarter) (Quarter :: soFar)
+    else if amount >= toCents Dime then
+        toMoneyHelp (amount - toCents Dime) (Dime :: soFar)
+    else if amount >= toCents Nickel then
+        toMoneyHelp (amount - toCents Nickel) (Nickel :: soFar)
+    else if amount >= toCents Penny then
+        toMoneyHelp (amount - toCents Penny) (Penny :: soFar)
     else
         soFar
