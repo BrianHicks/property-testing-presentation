@@ -17,6 +17,12 @@ money =
         ]
 
 
+monies : Fuzzer (List Money)
+monies =
+    Fuzz.list money
+        |> Fuzz.map (List.sortBy Money.toCents)
+
+
 moneySpec : Test
 moneySpec =
     describe "Money"
@@ -41,15 +47,19 @@ moneySpec =
                     ]
             ]
         , describe "toMoney"
-            [ fuzz (Fuzz.intRange 1 1000) "has at least one money in it" <|
-                \amount ->
-                    Money.toMoney amount
-                        |> Expect.notEqual []
-            , fuzz (Fuzz.intRange 1 1000) "has the right amount of money in it" <|
+            [ fuzz (Fuzz.intRange 1 1000) "has the right amount of money in it" <|
                 \amount ->
                     Money.toMoney amount
                         |> List.map Money.toCents
                         |> List.sum
                         |> Expect.equal amount
+            , fuzz monies "does not lose money" <|
+                \howMuch ->
+                    howMuch
+                        |> List.map Money.toCents
+                        |> List.sum
+                        |> Money.toMoney
+                        |> List.sortBy Money.toCents
+                        |> Expect.equal howMuch
             ]
         ]
