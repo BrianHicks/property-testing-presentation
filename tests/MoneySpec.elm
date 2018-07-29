@@ -19,8 +19,7 @@ money =
 
 monies : Fuzzer (List Money)
 monies =
-    Fuzz.list money
-        |> Fuzz.map (List.sortBy Money.toCents)
+    Fuzz.map2 (::) money (Fuzz.list money)
 
 
 moneySpec : Test
@@ -53,13 +52,16 @@ moneySpec =
                         |> List.map Money.toCents
                         |> List.sum
                         |> Expect.equal amount
-            , fuzz monies "does not lose money" <|
+            , fuzz monies "does not create or nullify money" <|
                 \howMuch ->
                     howMuch
                         |> List.map Money.toCents
                         |> List.sum
                         |> Money.toMoney
-                        |> List.sortBy Money.toCents
-                        |> Expect.equal howMuch
+                        |> List.length
+                        |> Expect.all
+                            [ Expect.greaterThan 0
+                            , Expect.atMost (List.length howMuch)
+                            ]
             ]
         ]
