@@ -45,5 +45,11 @@ moneySpec =
                 \amount ->
                     Money.toMoney amount
                         |> Expect.notEqual []
+            , fuzz (Fuzz.floatRange 1 1000) "has the right amount of money in it" <|
+                \amount ->
+                    Money.toMoney amount
+                        |> List.map Money.toFloat
+                        |> List.sum
+                        |> Expect.equal amount
             ]
         ]
