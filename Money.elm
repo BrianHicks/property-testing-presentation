@@ -46,4 +46,4 @@ toMoneyHelp amount soFar =
     else if amount >= toFloat Penny then
         toMoneyHelp (amount - toFloat Penny) (Penny :: soFar)
     else
-        []
+        soFar
