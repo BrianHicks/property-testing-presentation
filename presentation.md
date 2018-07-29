@@ -253,7 +253,11 @@ snack =
 
 ---
 
-## When two functions do opposite things.
+## When two functions do symmetric things.
+
+---
+
+## When you can use a model to verify behavior.
 
 ---
 
