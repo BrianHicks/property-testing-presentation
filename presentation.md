@@ -254,15 +254,45 @@ snack =
 
 ---
 
-## But... it's really hard to describe properties. Sorry.
+[.background-color: #7ED321]
+[.header: #FFF]
+
+## [fit] 2b. When are they *not* useful?
 
 ---
 
-> The numbers in this list will be ordered from least to greatest.
+## When the code under test is super simple.
 
 ---
 
-> Each number in this list will be less than or equal to the one after it.
+## When the code under test is extremely expensive.
+
+---
+
+[.background-color: #7ED321]
+[.header: #FFF]
+
+## [fit] 2c. How can I tell?
+
+---
+
+## It's really hard to describe properties. Sorry.
+
+---
+
+## Write down, in natural language, what your code should do.
+
+---
+
+> The numbers in this list are be ordered from least to greatest.
+
+---
+
+## Rephrase if it's the same as what the implementation does
+
+---
+
+> Each number in this list is less than or equal to the one after.
 
 ---
 
@@ -270,24 +300,3 @@ snack =
 [.header: #FFF]
 
 ## 3. :skull: Demo :skull:
-
----
-
-# [fit] What property
-# testing *isn't*
-
----
-
-# Formal Methods
-
----
-
-# Fuzzing
-
----
-
-# Integration Testing
-
----
-
-the end no more slides garbage now
