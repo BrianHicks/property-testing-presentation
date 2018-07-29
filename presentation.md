@@ -64,14 +64,21 @@ also need to be able to perform basic mathematical operations on them.
 [.background-color: #7ED321]
 [.header: #FFF]
 
-## 3. :skull: Demo :skull:
+## 3. How can I write good properties?
 
 ---
 
 [.background-color: #7ED321]
 [.header: #FFF]
 
-## 4. Takeaways & Recommendations
+## 4. :skull: Demo :skull:
+
+---
+
+[.background-color: #7ED321]
+[.header: #FFF]
+
+## 5. Takeaways & Recommendations
 
 ---
 
@@ -272,11 +279,11 @@ snack =
 [.background-color: #7ED321]
 [.header: #FFF]
 
-## [fit] 2c. How can I tell?
+## 3. How can I write good properties?
 
 ---
 
-## It's really hard to describe properties. Sorry.
+## It's really hard to write properties. Sorry.
 
 ---
 
