@@ -311,3 +311,53 @@ snack =
 [.header: #FFF]
 
 ## 4. :skull: Demo :skull:
+
+---
+
+[.background-color: #7ED321]
+[.header: #FFF]
+
+## 5. Takeaways & Recommendations
+
+---
+
+## Don't try to force property testing everywhere
+
+---
+
+## Built-in generators are often insufficient.
+## Write your own!
+
+---
+
+## Language Support
+
+---
+
+## Further Reading
+
+- **Proper Testing:** propertesting.com
+- **Hypothesis blog:** hypothesis.works
+
+---
+
+## Libraries
+
+| Language | Library |
+|---|---|
+| Elixir | stream_data
+| Elm | elm-test
+| Erlang | Quviq QuickCheck, PropEr
+| Haskell | ~~QuickCheck~~ Hedgehog
+| Python | Hypothesis
+| Scala | ScalaCheck, Hedgehog
+| *your favorite language here* | probably. Google it.
+
+---
+
+[.background-color: #7ED321]
+[.header: #FFF]
+
+# Thank You!
+
+## brian@brianthicks.com
