@@ -332,17 +332,6 @@ snack =
 
 ## Language Support
 
----
-
-## Further Reading
-
-- **Proper Testing:** propertesting.com
-- **Hypothesis blog:** hypothesis.works
-
----
-
-## Libraries
-
 | Language | Library |
 |---|---|
 | Elixir | stream_data
@@ -352,6 +341,13 @@ snack =
 | Python | Hypothesis
 | Scala | ScalaCheck, Hedgehog
 | *your favorite language here* | probably. Google it.
+
+---
+
+## Further Reading
+
+- **Proper Testing:** propertesting.com
+- **Hypothesis blog:** hypothesis.works
 
 ---
 
