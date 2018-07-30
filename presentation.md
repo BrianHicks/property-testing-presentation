@@ -110,7 +110,7 @@ also need to be able to perform basic mathematical operations on them.
 
 ---
 
-## A property is a thing that's always true about some code.
+## A property is a rule that describes a program's behavior.
 
 ---
 
