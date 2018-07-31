@@ -357,3 +357,5 @@ snack =
 # Thank You!
 
 ## brian@brianthicks.com
+
+### github.com/BrianHicks/property-testing-presentation
