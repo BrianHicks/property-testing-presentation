@@ -93,16 +93,6 @@ also need to be able to perform basic mathematical operations on them.
 
 ---
 
-> Historically, the definition of property based testing has been "The thing that QuickCheck does".
->
-> -- David R. MacIver, [What is Property Based Testing?](https://hypothesis.works/articles/what-is-property-based-testing/)
-
----
-
-![150%](https://media.giphy.com/media/y65VoOlimZaus/giphy.gif)
-
----
-
 [.background-color: #7ED321]
 [.header: #FFF]
 
@@ -168,36 +158,39 @@ multiplication =
 
 ---
 
-# `int`
-
-# [fit] `-27 794774205 -3 -8 1 7`
+# What's going on here?
 
 ---
 
-# `list int`
-
-# [fit] `[-42, 29, -16, -3533777802, 0]`
-
----
-
-# `string`
-
-# [fit] `"\t\t \t\n " "ws0\\M$6E&" "in" ""`
+1. Generate a random integer `x`
+2. Generate a random integer `y`
+3. Feed those to the assertion
+4. Repeat 100ish times
 
 ---
 
-# `string`
+# Property Testing
 
-#### `QTp%gZY+O1~ZvPb7.2L%;@_m1g~P}\"EA2pI!donAF$2nbQ6n#1x?Co4]v/h)_m;x2xsu(\"BM4)4a,fX+L5*e->{QV:#a6|~DWpA'Qt)|+[&%p3N^[cpbK*jK=\\G1lbRNl+]}!@s3\"@MA-JcaHq>w0J)/|YF2|fb&sJCS|rOL2PZ}J$+Q\\B~H#b>*lK-\"So@KxHBD4]>N05wV:[m|>%<,rkUa-nQ\"D,uocep2GNiVtt6K+aXY=r!/S&eo'r5_7N=<bZ%tk)l_slFk~eJBe@MmM$&|ylu:3EGLobZ^\"7/;aVQ|n*o _,l4[_yjqa>vq)mb}Dhq(f_g#0aV&H8/=[B-7W))Ef~pSw~'Ja5o0:J{F8[E,iCU0}-j}'&(CCh~Z<OYkz}Ck8U$hl{nf+tqTH5:rawCP10:K*D)q79CG/e0APSPaXgH:MVAzmT)Z[Ru+7C4*jdJSihQx[RougtGn39TPzcnol|ES 4Cyex$E ={gE}w)$9;>@x@26WD9ok8SGS3P\\Jn)UG#}t^c!LvRdygD;:R$xLhbQ[xRJF^ya+eFVLxi95N:|@vZ_1R=`
+```elm
+multiplication : Test
+multiplication =
+    describe "multiplication"
+        [ fuzz2 Fuzz.int Fuzz.int "is commutative" <|
+            \x y ->
+                Expect.equal (x * y) (y * x)
+        ]
+```
 
 ---
 
-# Won't I get garbage test cases?
+# Won't I get garbage input on failure?
 
 ---
 
-# Nope!
-# Shrinking!
+1. Generate a random integer `x`
+2. Generate a random integer `y`
+3. Feed those to the assertion, **which fails! :cry:**
+4. **Shrink the input to the simplest failing case**
 
 ---
 
@@ -212,33 +205,9 @@ fuzz (Fuzz.list Fuzz.int) "no five items" <|
 
 :x: `[0, 0, 0, -47, 7]`
 
-:x: `[0, 0, 0, 0, 0]`
+:x: `[0, 0, 0, 0, 0]` :point_left:
 
 :white_check_mark: `[0, 0, 0, 0]`
-
----
-
-```elm
-snack : Fuzzer String
-snack =
-    Fuzz.oneOf
-        [ Fuzz.constant "Dr. Pepper"
-        , Fuzz.constant "All Dressed Chips"
-        , Fuzz.constant "Baklava"
-        ]
-```
-
----
-
-```elm
-snack : Fuzzer String
-snack =
-    Fuzz.frequency
-        [ ( 2, Fuzz.constant "Dr. Pepper" )
-        , ( 5, Fuzz.constant "All Dressed Chips" )
-        , ( 3, Fuzz.constant "Baklava" )
-        ]
-```
 
 ---
 
@@ -295,11 +264,7 @@ snack =
 
 ---
 
-> The numbers in this list are be ordered from least to greatest.
-
----
-
-## Rephrase if it's the same as what the implementation does
+> The numbers in this list are ordered from least to greatest.
 
 ---
 
