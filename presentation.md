@@ -226,11 +226,11 @@ fuzz (Fuzz.list Fuzz.int) "no five items" <|
 
 ---
 
-## When you can use a model to verify behavior.
+## When the system under test does a complex thing, but the user sees a simple thing.
 
 ---
 
-## When the system under test does a complex thing, but the user sees a simple thing.
+## When you can use an "oracle" to verify behavior.
 
 ---
 
