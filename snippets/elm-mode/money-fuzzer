@@ -1,0 +1,13 @@
+# -*- mode: snippet -*-
+# name: money fuzzer
+# key: money-fuzzer
+# --
+money : Fuzzer Money
+money =
+    Fuzz.oneOf
+        [ Fuzz.constant Dollar
+        , Fuzz.constant Quarter
+        , Fuzz.constant Dime
+        , Fuzz.constant Nickel
+        , Fuzz.constant Penny
+        ]
