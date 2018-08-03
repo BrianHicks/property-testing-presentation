@@ -5,6 +5,7 @@
 Files:
 
 - `presentation.md`: my slides, suitable for rendering with [Deckset](https://www.deckset.com/)
+- `presentation.pdf`: that presentation, rendered
 - `Money.elm`: the final version of the code we wrote in the demo
 - `tests/MoneySpec.elm`: the final version of the tests we wrote
 - `snippets/*`: snippets to make me type more gooder
