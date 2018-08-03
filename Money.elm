@@ -10,8 +10,8 @@ type Money
 
 
 toCents : Money -> Int
-toCents money =
-    case money of
+toCents amount =
+    case amount of
         Dollar ->
             100
 
@@ -30,20 +30,20 @@ toCents money =
 
 toMoney : Int -> List Money
 toMoney amount =
-    toMoneyHelp amount []
+    toMoneyRec amount []
 
 
-toMoneyHelp : Int -> List Money -> List Money
-toMoneyHelp amount soFar =
+toMoneyRec : Int -> List Money -> List Money
+toMoneyRec amount soFar =
     if amount >= toCents Dollar then
-        toMoneyHelp (amount - toCents Dollar) (Dollar :: soFar)
+        toMoneyRec (amount - toCents Dollar) (Dollar :: soFar)
     else if amount >= toCents Quarter then
-        toMoneyHelp (amount - toCents Quarter) (Quarter :: soFar)
+        toMoneyRec (amount - toCents Quarter) (Quarter :: soFar)
     else if amount >= toCents Dime then
-        toMoneyHelp (amount - toCents Dime) (Dime :: soFar)
+        toMoneyRec (amount - toCents Dime) (Dime :: soFar)
     else if amount >= toCents Nickel then
-        toMoneyHelp (amount - toCents Nickel) (Nickel :: soFar)
+        toMoneyRec (amount - toCents Nickel) (Nickel :: soFar)
     else if amount >= toCents Penny then
-        toMoneyHelp (amount - toCents Penny) (Penny :: soFar)
+        toMoneyRec (amount - toCents Penny) (Penny :: soFar)
     else
         soFar

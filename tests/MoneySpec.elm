@@ -17,9 +17,10 @@ money =
         ]
 
 
-monies : Fuzzer (List Money)
-monies =
+someMoney : Fuzzer (List Money)
+someMoney =
     Fuzz.map2 (::) money (Fuzz.list money)
+        |> Fuzz.map (List.sortBy Money.toCents)
 
 
 moneySpec : Test
@@ -27,8 +28,8 @@ moneySpec =
     describe "Money"
         [ describe "toCents"
             [ fuzz money "is never zero" <|
-                \money ->
-                    money
+                \amount ->
+                    amount
                         |> Money.toCents
                         |> Expect.notEqual 0
             , describe "specific values" <|
@@ -46,22 +47,23 @@ moneySpec =
                     ]
             ]
         , describe "toMoney"
-            [ fuzz (Fuzz.intRange 1 1000) "has the right amount of money in it" <|
+            [ fuzz (Fuzz.intRange 0 1000) "gives the right amount of money" <|
                 \amount ->
-                    Money.toMoney amount
+                    amount
+                        |> Money.toMoney
                         |> List.map Money.toCents
                         |> List.sum
                         |> Expect.equal amount
-            , fuzz monies "does not create or nullify money" <|
-                \howMuch ->
-                    howMuch
+            , fuzz someMoney "does not lose value" <|
+                \currency ->
+                    currency
                         |> List.map Money.toCents
                         |> List.sum
                         |> Money.toMoney
                         |> List.length
                         |> Expect.all
                             [ Expect.greaterThan 0
-                            , Expect.atMost (List.length howMuch)
+                            , Expect.atMost (List.length currency)
                             ]
             ]
         ]
